@@ -120,8 +120,7 @@ result_path = "C:/Users/fmelo/Documents/Github/MBMDRc_R/Result/2d/"
 args = commandArgs(trailingOnly=TRUE)
 p_threshold <- as.numeric(args[1]) #i.e., 0.95
 is_0_considered <- args[2]  # 0 = considered ; 1 Not_considered
-p_threshold <- 0.05
-is_0_considered = "0"
+
 set.seed(7)
 row_2d <- 14 # This is not a parameter to change: number of rows in each HLO matrix
 

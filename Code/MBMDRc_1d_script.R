@@ -55,16 +55,13 @@ Risk_calculation_1d = function(snp_dat, chisq_df, mdr_model, is_0_considered = "
 
 
 data_path = "C:/Users/fmelo/Documents/Github/MBMDRc_R/Data/1d"
-
-
 result_path = "C:/Users/fmelo/Documents/Github/MBMDRc_R/Result/1d"
 
 args = commandArgs(trailingOnly=TRUE)
 p_threshold <- as.numeric(args[1]) #0.95
 is_0_considered <- (args[2]) # 0 = considered ; 1 Not_considered
 
-p_threshold <- 0.05
-is_0_considered = "0"
+
 set.seed(7)
 row_1d <- 7
 
