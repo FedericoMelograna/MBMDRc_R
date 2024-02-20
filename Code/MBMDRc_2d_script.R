@@ -60,7 +60,6 @@ Risk_calculation_2d = function(snp_dat, chisq_df, mdr_model, is_0_considered = "
         snp1_val <- snp_dat[[subj_idx, mas[1]]]
         snp2_val <- snp_dat[[subj_idx, mas[2]]]
         
-        snp2_val = 9
         s1 = snp1_val == 9 | snp1_val == -9 ; s2 = snp2_val == 9 | snp2_val == -9 
         
         if (! (s1 || s2)){
