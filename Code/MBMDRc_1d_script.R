@@ -1,4 +1,3 @@
-
 library(data.table)
 library(tidyverse)
 
@@ -54,37 +53,29 @@ Risk_calculation_1d = function(snp_dat, chisq_df, mdr_model, is_0_considered = "
 
 
 
-data_path = "C:/Users/fmelo/Documents/Github/MBMDRc_R/Data/1d"
-result_path = "C:/Users/fmelo/Documents/Github/MBMDRc_R/Result/1d"
 
 args = commandArgs(trailingOnly=TRUE)
 p_threshold <- as.numeric(args[1]) #0.95
 is_0_considered <- (args[2]) # 0 = considered ; 1 Not_considered
+data_path = args[3]
+result_path = args[4]
+model = args[5]
+output = args[6]
+data = args[7]
 
 
 set.seed(7)
 row_1d <- 7
 
 setwd(data_path)
-checkStrict <- function(f, silent=FALSE) {
-  vars <- codetools::findGlobals(f)
-  found <- !vapply(vars, exists, logical(1), envir=as.environment(2))
-  if (!silent && any(found)) {
-    warning("global variables used: ", paste(names(found)[found], collapse=', '))
-    return(invisible(FALSE))
-  }
-  
-  !any(found)
-}
 
-raw_model = read.table(file = paste0("mbmdr_model_1d", ".txt"),fill = T, header = F)
-chisq_df = fread(file = paste0("mbmdr_output_1d", ".txt"), header = F, skip = 0,col.names = c('ma1', 'chi_sq', 'p_val'))
-# chisq_df = chisq_df %>% mutate(ma_names = paste(ma1,ma2, sep = "_"))
 
-setwd(data_path)
+raw_model = read.table(file = model,fill = T, header = F)
+chisq_df = fread(file = output, header = F, skip = 0,col.names = c('ma1', 'chi_sq', 'p_val'))
+data <- as.tibble(fread(data))
 
-data <- as.tibble(fread("MockData_1d.txt"))
 snp_dat = select(data, - c(D))
+
 
 
 

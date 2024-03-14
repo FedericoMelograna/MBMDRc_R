@@ -1,5 +1,3 @@
-
-
 library(data.table)
 library(tidyverse)
 
@@ -113,12 +111,17 @@ Risk_calculation_2d = function(snp_dat, chisq_df, mdr_model, is_0_considered = "
 
 # Parameters --------------------------------------------------------------
 
-data_path = "C:/Users/fmelo/Documents/Github/MBMDRc_R/Data/2d"
-result_path = "C:/Users/fmelo/Documents/Github/MBMDRc_R/Result/2d/"
 
 args = commandArgs(trailingOnly=TRUE)
 p_threshold <- as.numeric(args[1]) #i.e., 0.95
 is_0_considered <- args[2]  # 0 = considered ; 1 Not_considered
+data_path = args[3]
+result_path = args[4]
+model = args[5]
+output = args[6]
+data = args[7]
+
+
 
 set.seed(7)
 row_2d <- 14 # This is not a parameter to change: number of rows in each HLO matrix
@@ -130,20 +133,16 @@ setwd(data_path)
 
 
 
-raw_model = fread(file = paste0("MBMDRinput_models", ".txt"),fill = T, header = F)
-chisq_df = fread(file = paste0("mbmdr_output", ".txt"), header = F, skip = 0, col.names = c('ma1', 'ma2', 'chi_sq', 'p_val'))
+raw_model = fread(file = model,fill = T, header = F)
+chisq_df = fread(file = output, header = F, skip = 0, col.names = c('ma1', 'ma2', 'chi_sq', 'p_val'))
 chisq_df = chisq_df %>% mutate(ma_names = paste(ma1,ma2, sep = "_"))
-
-
-data <- as.tibble(fread("MockData.txt"))
+data <- as.tibble(fread(data))
 snp_dat = select(data, - c(D))
 
 
 
 ### MDR model IMPLEMENTATION --> it exploit the facts that the entries are ORDERED --> took only the top rows, that have significant p-value
 setwd(result_path)
-
-
 
 mdr_model = create_MDR_model_2d( raw_model, chisq_df, p_threshold = p_threshold)
 saveRDS(mdr_model, file = paste0("MDR_model_",p_threshold,".rds"))

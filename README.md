@@ -9,18 +9,23 @@ After installation, it is possible to run the code with the appropriate paramete
 
 * p_threshold, the p-value threshold: all the SNP (or SNP-pairs if 2d) under the p-value are considered 
 * is_0_consider: {0;1}, if 0, the cells of the HLO matrix marked with 0 are also considered in the calculation; otherwise, only H and L. 
+* data_path: a string for the data path
+* result_path: a string for where you want to save the results
+* model: the name and location (in data path if not specified) of the MBMDR model
+* output: the name and location (in data path if not specified) of the hits found my MBMDR
+* data: the name and location of the input MBMDR data
 
-Example: 
+Example with MockData: 
 
-``` ./MBMDRc_1d_script.R 0.05 0 ```
+``` ./MBMDRc_1d_script.R 0.05 0 ../Data/1d/ ../../Result/1d/ mbmdr_model_1d.txt mbmdr_output_1d.txt MockData_1d.txt ```
 
 or, for 2d 
 
-``` ./MBMDRc_2d_script.R 0.05 0  ```
+``` ./MBMDRc_2d_script.R 0.05 0  ../Data/2d/ ../../Result/2d/ MBMDRinput_models.txt mbmdr_output.txt MockData.txt ```
 
 Alternatively, it is possible to open the .R file in Rstudio and manually set the parameters to their value.
 
-The required inputs are: 
+The required inputs have the following shape: 
 
 * mbmdr_model_1d, (MBMDRinput_models if 2d) with the subject, average continuous trait and HL0 matrix for each hit
 * mbmdr_output_1d, (mbmdr_output if 2d), with the top hits (either SNp or SNP pairs), togheter with the chi square statistic and the p-value
