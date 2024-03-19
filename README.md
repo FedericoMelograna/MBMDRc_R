@@ -31,4 +31,7 @@ The required inputs have the following shape:
 * mbmdr_output_1d, (mbmdr_output if 2d), with the top hits (either SNp or SNP pairs), togheter with the chi square statistic and the p-value
 * MockData: data simulating a tabular matrix with individuals on the rows and SNPs on the column, with the phenotype as the first column.
 
- 
+For the wrapper (Wrapped_MBMDRc.R), the parameters are the same as before for 1d and 2d with only the addition of the parameter d_level, as last parameter, that can take the value "1" (MBMDRc-1d) or "2" (MBMDRc-2d). A typical call to the wrapper look a bit something like this: 
+
+``` Wrapper_MBMDRc("0.05", "0", "../Data/2d/", "../../Result/2d/", "MBMDRinput_models.txt", "mbmdr_output.txt", "MockData.txt", "2") ```
+
