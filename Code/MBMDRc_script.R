@@ -142,83 +142,57 @@ Risk_calculation_1d = function(snp_dat, chisq_df, mdr_model, is_0_considered = "
   return(risk_1d)
 }
 
-Calc_MBMDR_1d = function(p_threshold, is_0_considered, data_path, result_path, model, output, data){
-
-  
-
-  
+Calc_MBMDR_1d = function(p_threshold, is_0_considered, model, chisq, seed=7){
   p_threshold <- as.numeric(p_threshold) #0.95
   
-  
-  set.seed(7)
+  set.seed(seed)
   row_1d <- 7
   
-  setwd(data_path)
-  
-  
   raw_model = read.table(file = model,fill = T, header = F)
-  chisq_df = fread(file = output, header = F, skip = 0,col.names = c('ma1', 'chi_sq', 'p_val'))
-  data <- as.tibble(fread(data))
+  chisq_df = fread(file = chisq, header = F, skip = 0,col.names = c('ma1', 'chi_sq', 'p_val'))
   
-  snp_dat = select(data, - c(D))
-  
-  
-  # Create MDR model 1d -----------------------------------------------------
-  
-  mdr_model = create_MDR_model_1d( raw_model, chisq_df, p_threshold = p_threshold)
-  setwd(result_path)
-  saveRDS(mdr_model, file = paste0("MDR_model_1d_",p_threshold,".rds"))
-  
-  
-  # Calculate risk ----------------------------------------------------------
-  
-  risk_1d = Risk_calculation_1d(snp_dat, chisq_df, mdr_model, is_0_considered,p_threshold)
-  saveRDS(risk_1d, file = paste0("MBMDRc_risk_1d_",p_threshold,"with",is_0_considered,".rds"))
-  result_df <- data.frame(risk_1d, data)
-  result_df %>% 
-    rownames_to_column('Subj') %>%
-    dplyr::select(Subj, D, risk_1d) %>%
-    fwrite(paste0("MBMDRc_risk_file_MBMDR_1d_",p_threshold,"with",is_0_considered ,".txt"))
-  
+  return(create_MDR_model_1d( raw_model, chisq_df, p_threshold = p_threshold))
 }
-Calc_MBMDR_2d = function(p_threshold, is_0_considered, data_path, result_path, model, output, data){
 
-  
+Calc_MBMDR_Risk_1d = function(p_threshold, is_0_considered, model, data, chisq, seed=7){
+  p_threshold <- as.numeric(p_threshold)
+  mdr_model = Calc_MBMDR_1d(p_threshold, is_0_considered, model, chisq, seed)
 
+  chisq_df = fread(file = chisq, header = F, skip = 0,col.names = c('ma1', 'chi_sq', 'p_val'))
+  data_df <- as.tibble(fread(data))
+  snp_dat = select(data_df, - c(D))
   
-  
+  return(Risk_calculation_1d(snp_dat, chisq_df, mdr_model, is_0_considered,p_threshold))
+}
+
+Calc_MBMDR_2d = function(p_threshold, is_0_considered, model, chisq, seed=7){
   p_threshold <- as.numeric(p_threshold) #i.e., 0.95
-  set.seed(7)
+  set.seed(seed)
   row_2d <- 14 # This is not a parameter to change: number of rows in each HLO matrix
-  
-  setwd(data_path)
-  
   
   # Data input --------------------------------------------------------------
   
   raw_model = fread(file = model,fill = T, header = F)
-  chisq_df = fread(file = output, header = F, skip = 0, col.names = c('ma1', 'ma2', 'chi_sq', 'p_val'))
+  chisq_df = fread(file = chisq, header = F, skip = 0, col.names = c('ma1', 'ma2', 'chi_sq', 'p_val'))
   chisq_df = chisq_df %>% mutate(ma_names = paste(ma1,ma2, sep = "_"))
-  data <- as.tibble(fread(data))
+  
+  ### MDR model IMPLEMENTATION
+  # it exploit the facts that the entries are ORDERED
+  # took only the top rows, that have significant p-value
+  return(create_MDR_model_2d( raw_model, chisq_df, p_threshold = p_threshold))
+}
+
+Calc_MBMDR_Risk_2d = function(p_threshold, is_0_considered, model, chisq, data, seed=7){
+  p_threshold <- as.numeric(p_threshold) #i.e., 0.95
+  set.seed(seed)
+  mdr_model = Calc_MBMDR_2d(p_threshold, is_0_considered, model, chisq, seed)
+
+  chisq_df = fread(file = chisq, header = F, skip = 0, col.names = c('ma1', 'ma2', 'chi_sq', 'p_val'))
+  chisq_df = chisq_df %>% mutate(ma_names = paste(ma1,ma2, sep = "_"))
+  data <- as.tibble(fread(chisq))
   snp_dat = select(data, - c(D))
-  
-  
-  
-  ### MDR model IMPLEMENTATION --> it exploit the facts that the entries are ORDERED --> took only the top rows, that have significant p-value
-  setwd(result_path)
-  mdr_model = create_MDR_model_2d( raw_model, chisq_df, p_threshold = p_threshold)
-  saveRDS(mdr_model, file = paste0("MDR_model_",p_threshold,".rds"))
-  
-  
+
   # Calculate risk ----------------------------------------------------------
-  
-  risk_2d = Risk_calculation_2d(snp_dat, chisq_df, mdr_model, is_0_considered,p_threshold)
-  saveRDS(risk_2d, file = paste0("MBMDRc_risk_",p_threshold,"with",is_0_considered,".rds"))
-  result_df <- data.frame(risk_2d, data) 
-  result_df %>%
-    rownames_to_column('Subj') %>%
-    dplyr::select(Subj, D, risk_2d) %>%
-    fwrite(paste0("MBMDRc_risk_file_MBMDR_",p_threshold,"with",is_0_considered, ".txt"))
-  
+  return(Risk_calculation_2d(snp_dat, chisq_df, mdr_model, is_0_considered,p_threshold))
 }
 
