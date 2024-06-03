@@ -189,7 +189,7 @@ Calc_MBMDR_Risk_2d = function(p_threshold, is_0_considered, model, chisq, data, 
 
   chisq_df = fread(file = chisq, header = F, skip = 0, col.names = c('ma1', 'ma2', 'chi_sq', 'p_val'))
   chisq_df = chisq_df %>% mutate(ma_names = paste(ma1,ma2, sep = "_"))
-  data <- as.tibble(fread(chisq))
+  data <- as.tibble(fread(data))
   snp_dat = select(data, - c(D))
 
   # Calculate risk ----------------------------------------------------------
