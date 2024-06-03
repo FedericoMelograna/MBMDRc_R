@@ -182,7 +182,7 @@ Calc_MBMDR_2d = function(p_threshold, is_0_considered, model, chisq, seed=7){
   return(create_MDR_model_2d( raw_model, chisq_df, p_threshold = p_threshold))
 }
 
-Calc_MBMDR_Risk_2d = function(p_threshold, is_0_considered, model, chisq, data, seed=7){
+Calc_MBMDR_Risk_2d = function(p_threshold, is_0_considered, model, data, chisq, seed=7){
   p_threshold <- as.numeric(p_threshold) #i.e., 0.95
   set.seed(seed)
   mdr_model = Calc_MBMDR_2d(p_threshold, is_0_considered, model, chisq, seed)

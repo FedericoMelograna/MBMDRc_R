@@ -18,7 +18,8 @@ Wrapper_MBMDRc = function(p_threshold, is_0_considered, model,data,  chisq, d_le
     print("MBMDRc-2d successfully run")
   }
   filename = paste0("Individual_risk_", d_level, "d.txt")
-  write(x = individual_risk, file = paste0("Individual_risk_", d_level, "d.txt"))
+  write(x = individual_risk, file = paste0("Individual_risk_", d_level, "d.txt"), ncolumns = 1)
+  
   return(filename)
 }
 
